@@ -41,8 +41,9 @@ public class DialogManager : MonoBehaviour
 
     void DisplayMessage()
     {
-        messageText.text = string.Empty;
         okNext = false;
+        messageText.text = string.Empty;
+        
         Message messageToDisplay = currentMessages[activeMessage];
         
         //messageText.text = messageToDisplay.message;
@@ -56,15 +57,17 @@ public class DialogManager : MonoBehaviour
 
         AnimateTextColor();
         Debug.Log("Message animated");
-        okNext = true;
+        //okNext = true;
     }
 
     public void NextMessage()
     {
+        okNext = false;
         activeMessage++;
         if(activeMessage < currentMessages.Length)
         {
             DisplayMessage();
+            //okNext = true;
         } else
         {
             Debug.Log("Conversation ended !");
@@ -115,6 +118,7 @@ public class DialogManager : MonoBehaviour
 
     void AnimateTextColor()
     {
+        okNext = false;
         LeanTween.textAlpha(messageText.rectTransform, 0, 0);
         LeanTween.textAlpha(messageText.rectTransform, 1, 0.3f);
 
@@ -123,6 +127,7 @@ public class DialogManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        okNext = false;
         messageText.text = string.Empty;
         backgroundBox.transform.localScale = Vector3.zero;
     }
@@ -132,17 +137,20 @@ public class DialogManager : MonoBehaviour
     {
         if (isActive == true && okNext == true && Input.GetKeyDown(KeyCode.Space))
         {
+            okNext = false;
             NextMessage();
         }
     }
 
     IEnumerator TypeLine(Message messageToDisplay)
     {
+        okNext = false;
         foreach(char c in messageToDisplay.message.ToCharArray())
         {
             messageText.text += c;
             yield return new WaitForSeconds(textSpeed);
         }
+        okNext = true;
     }
 
 }
